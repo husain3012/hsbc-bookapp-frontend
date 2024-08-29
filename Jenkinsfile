@@ -1,28 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        GITHUB_TOKEN = credentials('github-token-id')
-    }
-
     stages {
         stage('cloning') {
             steps {
-                bat '''
-                REM Set the folder name and repository URL
-                set "FOLDER_NAME=empfrontend"
-                set "REPO_URL=https://%GITHUB_TOKEN%@github.com/husain3012/hsbc-bookapp-frontend.git"
-                
-                REM Check if the folder exists
-                if exist "%FOLDER_NAME%" (
-                    echo Removing existing folder "%FOLDER_NAME%"...
-                    rmdir /s /q "%FOLDER_NAME%"
-                )
-                
-                REM Clone the repository
-                echo Cloning repository from "%REPO_URL%"...
-                git clone "%REPO_URL%" "%FOLDER_NAME%"
-                '''
+                withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
+                    bat '''
+                    REM Set the folder name and repository URL
+                    set "FOLDER_NAME=empfrontend"
+                    set "REPO_URL=https://github.com/husain3012/hsbc-bookapp-frontend.git"
+                    
+                    REM Check if the folder exists
+                    if exist "%FOLDER_NAME%" (
+                        echo Removing existing folder "%FOLDER_NAME%"...
+                        rmdir /s /q "%FOLDER_NAME%"
+                    )
+                    
+                    REM Clone the repository
+                    echo Cloning repository from "%REPO_URL%"...
+                    git clone "%REPO_URL%" "%FOLDER_NAME%"
+                    '''
+                }
             }
         }
 
@@ -56,15 +54,17 @@ pipeline {
 
         stage('push version') {
             steps {
-                bat '''
-                cd empfrontend
-                git config --global user.email "hsr3012kalimg@gmail.com"
-                git config --global user.name "Husain Shahid Rao"
-                git pull
-                git add .
-                git commit -m "update version"
-                git push https://%GITHUB_TOKEN%@github.com/husain3012/hsbc-bookapp-frontend.git
-                '''
+                withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
+                    bat '''
+                    cd empfrontend
+                    git config --global user.email "hsr3012kalimg@gmail.com"
+                    git config --global user.name "Husain Shahid Rao"
+                    git pull
+                    git add .
+                    git commit -m "update version"
+                    git push https://%GITHUB_TOKEN%@github.com/husain3012/hsbc-bookapp-frontend.git
+                    '''
+                }
             }
         }
     }
