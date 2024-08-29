@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import logo from "./logo.svg";
+import axios from "axios";
+import BooksTable from "./components/BooksTable";
+import AddBookForm from "./components/AddBookForm";
+import Layout from "./components/Layout/Layout";
+import { Outlet, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Books from "./pages/Books";
+import Book from "./pages/Book";
+import NotFound from "./pages/NotFound";
+import AddBook from "./pages/AddBook";
+
+axios.defaults.baseURL = "http://localhost:8081/bookrest";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/books" element={<Books />} />
+        <Route path="/add" element={<AddBook />} />
+        <Route path="/book/:id" element={<Book />} />
+        <Route path="/*" element={<NotFound />} />
+      </Routes>
+    
+    </Layout>
   );
 }
 
