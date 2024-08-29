@@ -1,12 +1,17 @@
 pipeline {
     agent any
 
+    environment {
+        GITHUB_TOKEN = credentials('github-token-id')
+    }
+
     stages {
         stage('cloning') {
             steps {
-                bat '''REM Set the folder name and repository URL
+                bat '''
+                REM Set the folder name and repository URL
                 set "FOLDER_NAME=empfrontend"
-                set "REPO_URL=https://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@github.com/husain3012/hsbc-bookapp-frontend.git"
+                set "REPO_URL=https://%GITHUB_TOKEN%@github.com/husain3012/hsbc-bookapp-frontend.git"
                 
                 REM Check if the folder exists
                 if exist "%FOLDER_NAME%" (
@@ -16,13 +21,15 @@ pipeline {
                 
                 REM Clone the repository
                 echo Cloning repository from "%REPO_URL%"...
-                git clone "%REPO_URL%" "%FOLDER_NAME%"'''
+                git clone "%REPO_URL%" "%FOLDER_NAME%"
+                '''
             }
         }
 
-        stage('version update'){
-             steps {
-                bat '''@echo off
+        stage('version update') {
+            steps {
+                bat '''
+                @echo off
                 setlocal
                 
                 REM Change directory to empfrontend
@@ -47,15 +54,17 @@ pipeline {
             }
         }
 
-        stage('push version'){
+        stage('push version') {
             steps {
-               bat '''cd empfrontend
+                bat '''
+                cd empfrontend
                 git config --global user.email "hsr3012kalimg@gmail.com"
                 git config --global user.name "Husain Shahid Rao"
                 git pull
                 git add .
                 git commit -m "update version"
-                git push https://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@github.com/husain3012/hsbc-bookapp-frontend.git'''
+                git push https://%GITHUB_TOKEN%@github.com/husain3012/hsbc-bookapp-frontend.git
+                '''
             }
         }
     }
