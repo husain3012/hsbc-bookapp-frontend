@@ -6,7 +6,7 @@ pipeline {
             steps {
                 bat '''REM Set the folder name and repository URL
                 set "FOLDER_NAME=empfrontend"
-                set "REPO_URL=https://github.com/husain3012/hsbc-bookapp-frontend.git"
+                set "REPO_URL=https://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@github.com/husain3012/hsbc-bookapp-frontend.git"
                 
                 REM Check if the folder exists
                 if exist "%FOLDER_NAME%" (
